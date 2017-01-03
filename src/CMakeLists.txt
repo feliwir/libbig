@@ -14,4 +14,4 @@ add_library(libbig STATIC   ${SRC_FILES}
 
 set_property(TARGET libbig PROPERTY CXX_STANDARD 14)
 set_property(TARGET libbig PROPERTY PREFIX "")
-target_include_directories(libbig PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(libbig PUBLIC ${LIBBIG_ROOT}/include)
