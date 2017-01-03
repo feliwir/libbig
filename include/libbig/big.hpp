@@ -9,6 +9,12 @@ namespace libbig
 	class Big
 	{
 	private:
+		enum Version
+		{
+			CC		= 0,
+			BFME	= 1,
+		};
+
 		struct Entry
 		{
 			uint32_t	Size;
@@ -28,5 +34,6 @@ namespace libbig
 		std::fstream				m_stream;
 		uint32_t					m_size;
 		uint32_t					m_numEntries;
+		Version						m_version;
 	};
 }

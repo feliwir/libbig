@@ -12,13 +12,16 @@ bool Big::Load(const std::string& name)
 		return false;
 
 	//check if it's a big archive
-	const char check[] = { "BIG4" };
+	std::string magic;
 	for (int i = 0; i < 4; ++i)
-	{
-		char c = m_stream.get();
-		if (c != check[i])
-			return false;
-	}
+		magic += m_stream.get();
+	
+	if (magic == std::string("BIGF"))
+		m_version = CC;
+	else if (magic == std::string("BIG4"))
+		m_version = BFME;
+	else
+		return false;
 
 	m_size = read<uint32_t>(m_stream);
 	m_numEntries = reverse(read<uint32_t>(m_stream));

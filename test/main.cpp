@@ -1,5 +1,6 @@
 #include <libbig/manager.hpp>
 #include <iostream>
+
 int main(int argc, char** argv)
 {
 	libbig::Manager mngr;
