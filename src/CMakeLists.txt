@@ -1,4 +1,4 @@
-set(HEADER_DIR ${CMAKE_SOURCE_DIR}/include/libbig)
+set(HEADER_DIR ${LIBBIG_ROOT}/include/libbig)
 set(PUBLIC_HEADERS  ${HEADER_DIR}/big.hpp
                     ${HEADER_DIR}/manager.hpp)
 
