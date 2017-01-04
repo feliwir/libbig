@@ -31,7 +31,7 @@ uint8_t * libbig::Manager::GetEntry(const std::string & entry, uint32_t& size)
 	if (data == nullptr)
 	{
 		//could not be found in any archives. Look on the drive now:
-		std::ifstream fin(entry, std::ios::binary, std::ios::in);
+		std::ifstream fin(entry, std::ios::binary | std::ios::in);
 		if (fin.fail())
 			return data;
 
@@ -59,7 +59,7 @@ std::string libbig::Manager::GetEntry(const std::string & entry)
 	if (text.size() == 0)
 	{
 		//could not be found in any archives. Look on the drive now:
-		std::ifstream fin(entry, std::ios::binary, std::ios::in);
+		std::ifstream fin(entry, std::ios::binary| std::ios::in);
 		if (fin.fail())
 			return text;
 
