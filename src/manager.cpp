@@ -4,7 +4,7 @@ using namespace libbig;
 void Manager::AddBig(const std::string& name)
 {
 	//check if archive does exist
-	auto& it = m_archives.find(name);
+	auto it = m_archives.find(name);
 	if (it != m_archives.end())
 		return;
 

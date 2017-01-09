@@ -5,12 +5,7 @@ namespace libbig
 {
     inline uint32_t reverse(uint32_t v)
     {
-        _asm {
-            mov eax, v
-                xchg al, ah
-                rol eax, 16
-                xchg al, ah
-        }
+        return (v << 24) | (v << 8 & 0xff0000) | (v >> 8 & 0xff00) | (v >> 24);
     }
 
     template <class T>
