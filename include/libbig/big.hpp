@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <mutex>
 
 namespace libbig
 {
@@ -30,6 +31,7 @@ namespace libbig
 
 		std::vector<std::string> ListEntries();
 	private:
+		std::mutex					m_mutex;
 		std::map<std::string,Entry>	m_entries;
 		std::fstream				m_stream;
 		uint32_t					m_size;
