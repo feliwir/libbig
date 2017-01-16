@@ -29,7 +29,6 @@ uint8_t * libbig::Manager::GetEntry(const std::string & entry, uint32_t& size)
 			return data;
 	}
 
-	m_mutex.lock();
 	if (data == nullptr)
 	{
 		//could not be found in any archives. Look on the drive now:
@@ -43,7 +42,7 @@ uint8_t * libbig::Manager::GetEntry(const std::string & entry, uint32_t& size)
 		data = new uint8_t[size];
 		fin.read(reinterpret_cast<char*>(data), size);
 	}
-	m_mutex.unlock();
+
 	return data;
 }
 
@@ -58,8 +57,6 @@ std::string libbig::Manager::GetEntry(const std::string & entry)
 			return text;
 	}
 
-
-	m_mutex.lock();
 	if (text.size() == 0)
 	{
 		//could not be found in any archives. Look on the drive now:
@@ -70,7 +67,6 @@ std::string libbig::Manager::GetEntry(const std::string & entry)
 		text = std::string((std::istreambuf_iterator<char>(fin)),
 			std::istreambuf_iterator<char>());
 	}
-	m_mutex.unlock();	
 
 	return text;
 }

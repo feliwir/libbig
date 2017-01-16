@@ -11,6 +11,7 @@ bool Big::Load(const std::string& name)
 	if (m_stream.fail())
 		return false;
 
+	m_mutex.lock();
 	//check if it's a big archive
 	std::string magic;
 	for (int i = 0; i < 4; ++i)
@@ -35,6 +36,7 @@ bool Big::Load(const std::string& name)
 		auto Name = readString(m_stream);
 		m_entries[Name] = e;
 	}
+	m_mutex.unlock();
 	return true;
 }
 
@@ -45,11 +47,13 @@ uint8_t* Big::GetEntry(const std::string & entry, uint32_t & size)
 	if (it == m_entries.end())
 		return nullptr;
 
+	m_mutex.lock();
 	Entry e = it->second;
 	uint8_t* buffer = new uint8_t[e.Size];
 	m_stream.seekg(e.Offset, std::ios::beg);
 	m_stream.read(reinterpret_cast<char*>(buffer), e.Size);
 	size = e.Size;
+	m_mutex.unlock();
 	return buffer;
 }
 
@@ -59,11 +63,13 @@ std::string Big::GetEntry(const std::string & entry)
 	if (it == m_entries.end())
 		return std::string();
 
+	m_mutex.lock();
 	Entry e = it->second;
 	std::string buffer;
 	buffer.resize(e.Size);
 	m_stream.seekg(e.Offset, std::ios::beg);
 	m_stream.read(const_cast<char*>(buffer.data()), e.Size);
+	m_mutex.unlock();
 	return buffer;
 }
 
