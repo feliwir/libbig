@@ -9,8 +9,8 @@ called "FinalBig". The project is used in my apt_player and might be helpful for
 # How to build
 
 ```sh
-# in the project root
-$ cmake .
+$ mkdir build && cd build
+$ cmake ..
 $ cmake --build .
 ```
 
