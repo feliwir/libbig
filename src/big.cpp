@@ -40,6 +40,11 @@ bool Big::Load(const std::string& name)
 	return true;
 }
 
+bool Big::Write(const std::string & name)
+{
+	return false;
+}
+
 uint8_t* Big::GetEntry(const std::string & entry, uint32_t & size)
 {
 	size = 0;
@@ -71,6 +76,14 @@ std::string Big::GetEntry(const std::string & entry)
 	m_stream.read(const_cast<char*>(buffer.data()), e.Size);
 	m_mutex.unlock();
 	return buffer;
+}
+
+void Big::AddEntry(const std::string & entry, const std::string & text, bool overwrite)
+{
+}
+
+void Big::AddEntry(const std::string & entry, const uint8_t * data, uint32_t size, bool overwrite)
+{
 }
 
 

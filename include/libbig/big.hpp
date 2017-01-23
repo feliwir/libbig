@@ -23,11 +23,16 @@ namespace libbig
 		};
 	public:
 		bool Load(const std::string& name);
+		bool Write(const std::string& name);
 
 		//get entry binary
 		uint8_t* GetEntry(const std::string& entry, uint32_t& size);
 		//get entry as string
 		std::string GetEntry(const std::string& entry);
+
+		//add entry 
+		void AddEntry(const std::string& entry, const std::string& text,bool overwrite = true);
+		void AddEntry(const std::string& entry, const uint8_t* data, uint32_t size, bool overwrite = true);
 
 		std::vector<std::string> ListEntries();
 	private:
