@@ -1,6 +1,5 @@
 set(HEADER_DIR ${LIBBIG_ROOT}/include/libbig)
-set(PUBLIC_HEADERS  ${HEADER_DIR}/big.hpp
-                    ${HEADER_DIR}/manager.hpp)
+set(PUBLIC_HEADERS  ${HEADER_DIR}/big.hpp)
 
 file(GLOB_RECURSE SRC_FILES
 	"*.c"

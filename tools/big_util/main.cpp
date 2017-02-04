@@ -1,16 +1,20 @@
-#include <libbig/manager.hpp>
+#include <libbig/big.hpp>
 #include <iostream>
+using namespace libbig;
 
 int main(int argc, char** argv)
 {
-	libbig::Manager mngr;
-	mngr.AddBig("test.big");
-	auto big = mngr.GetArchive("test.big");
+	Big arch;
+	if(!arch.Load("test.big"))
+	{
+		std::cout << "Failed to open test.big!" << std::endl;
+		return -1;
+	}
 
-	for (const auto& e : big->ListEntries())
+	for (const auto& e : arch.ListEntries())
 	{
 		std::cout << e << ": " << std::endl;
-		std::cout << mngr.GetEntry(e) << std::endl;
+		std::cout << arch.GetEntry(e) << std::endl;
 	}
 
 	return 0;
