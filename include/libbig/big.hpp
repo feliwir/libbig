@@ -3,13 +3,14 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <istream>
 #include <mutex>
 
 namespace libbig
 {
 	class Big
 	{
-	private:
+	public:
 		enum Version
 		{
 			CC		= 0,
@@ -25,11 +26,14 @@ namespace libbig
 		bool Load(const std::string& name);
 		bool Write(const std::string& name);
 
+		//get entry info
+		Entry GetInfo(const std::string& entry);
 		//get entry binary
-		uint8_t* GetEntry(const std::string& entry, uint32_t& size);
+		uint8_t* GetBinary(const std::string& entry, uint32_t& size);
 		//get entry as string
-		std::string GetEntry(const std::string& entry);
-
+		std::string GetText(const std::string& entry);
+		//get entry stream
+		std::istream GetStream(const std::string& entry);
 		//add entry 
 		void AddEntry(const std::string& entry, const std::string& text,bool overwrite = true);
 		void AddEntry(const std::string& entry, const uint8_t* data, uint32_t size, bool overwrite = true);

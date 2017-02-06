@@ -1,6 +1,8 @@
 #include <libbig/big.hpp>
 #include "util.hpp"
 #include <iostream>
+#include <algorithm>
+#include "buffer.hpp"
 using namespace libbig;
 
 
@@ -34,21 +36,26 @@ bool Big::Load(const std::string& name)
 		e.Offset = reverse(read<uint32_t>(m_stream));
 		e.Size = reverse(read<uint32_t>(m_stream));
 		auto Name = readString(m_stream);
+		std::replace(Name.begin(),Name.end(),'\\','/');
+		std::transform(Name.begin(),Name.end(),Name.begin(),::tolower);
 		m_entries[Name] = e;
 	}
 	m_mutex.unlock();
 	return true;
 }
 
-bool Big::Write(const std::string & name)
+bool Big::Write(const std::string& name)
 {
 	return false;
 }
 
-uint8_t* Big::GetEntry(const std::string & entry, uint32_t & size)
+uint8_t* Big::GetBinary(const std::string& entry, uint32_t& size)
 {
 	size = 0;
-	auto it = m_entries.find(entry);
+	std::string Name = entry;
+	std::replace(Name.begin(),Name.end(),'\\','/');
+	std::transform(Name.begin(),Name.end(),Name.begin(),::tolower);
+	auto it = m_entries.find(Name);
 	if (it == m_entries.end())
 		return nullptr;
 
@@ -62,9 +69,12 @@ uint8_t* Big::GetEntry(const std::string & entry, uint32_t & size)
 	return buffer;
 }
 
-std::string Big::GetEntry(const std::string & entry)
+std::string Big::GetText(const std::string& entry)
 {
-	auto it = m_entries.find(entry);
+	std::string Name = entry;
+	std::replace(Name.begin(),Name.end(),'\\','/');
+	std::transform(Name.begin(),Name.end(),Name.begin(),::tolower);
+	auto it = m_entries.find(Name);
 	if (it == m_entries.end())
 		return std::string();
 
@@ -76,6 +86,18 @@ std::string Big::GetEntry(const std::string & entry)
 	m_stream.read(const_cast<char*>(buffer.data()), e.Size);
 	m_mutex.unlock();
 	return buffer;
+}
+
+Big::Entry Big::GetInfo(const std::string& entry)
+{
+	std::string Name = entry;
+	std::replace(Name.begin(),Name.end(),'\\','/');
+	std::transform(Name.begin(),Name.end(),Name.begin(),::tolower);
+	auto it = m_entries.find(Name);
+	if (it == m_entries.end())
+		return Entry();
+	
+	return it->second;
 }
 
 void Big::AddEntry(const std::string & entry, const std::string & text, bool overwrite)
