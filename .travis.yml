@@ -25,6 +25,10 @@ addons:
         - cmake-data
         - libpthread-stubs0-dev
 
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq qt5-default qttools5-dev-tools
+
 # Install
 install:
   - if [ "$TRAVIS_OS_NAME" = "linux" -a "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
