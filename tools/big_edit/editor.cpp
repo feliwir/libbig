@@ -2,6 +2,7 @@
 #include <QBoxLayout>
 #include <QStatusBar>
 #include <QMenuBar>
+#include <QFileDialog>
 #include <QContextMenuEvent>
 
 Editor::Editor(QWidget* parent)
@@ -27,7 +28,7 @@ Editor::Editor(QWidget* parent)
 	QString message = tr("A context menu is available by right-clicking");
 	statusBar()->showMessage(message);
 
-	setMinimumSize(160, 160);
+	setMinimumSize(300, 200);
 
 }
 
@@ -143,11 +144,14 @@ void Editor::newFile()
 
 void Editor::open()
 {
-	
+	auto fileName = QFileDialog::getOpenFileName(this,
+    tr("Open Archive"), "", tr("Big Files (*.big)"));
 }
 
 void Editor::save()
 {
+	auto fileName = QFileDialog::getSaveFileName(this,
+    tr("Save Archive"), "", tr("Big Files (*.big)"));
 }
 
 void Editor::saveAs()
