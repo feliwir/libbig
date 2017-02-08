@@ -2,6 +2,7 @@
 #include <QMainWindow>
 #include <QTreeView>
 #include <QAction>
+#include <QStandardItemModel>
 #include <QLabel>
 #include <libbig/big.hpp>
 using namespace libbig;
@@ -54,6 +55,9 @@ private:
 	QAction *aboutAct;
 	QAction *aboutQtAct;
 private:
-	QTreeView m_treeview;
-	std::map<QString, Big> m_archives;
+	void PopulateTree();
+private:
+	QStandardItemModel* m_model;
+	QString m_path;
+	Big m_archive;
 };

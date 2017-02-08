@@ -30,6 +30,7 @@ bool Big::Load(const std::string& name)
 	m_numEntries = reverse(read<uint32_t>(m_stream));
 	uint32_t first = reverse(read<uint32_t>(m_stream));
 
+	m_entries.clear();
 	for (auto i = 0; i < m_numEntries; i++)
 	{
 		Entry e;

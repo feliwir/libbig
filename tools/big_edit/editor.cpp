@@ -4,22 +4,35 @@
 #include <QMenuBar>
 #include <QFileDialog>
 #include <QContextMenuEvent>
+#include <QSplitter>
+#include <QTextEdit>
+#include <QStackedLayout>
+#include <QOpenGLWidget>
 
 Editor::Editor(QWidget* parent)
 {
 	QWidget *widget = new QWidget;
 	setCentralWidget(widget);
 
-	QWidget *topFiller = new QWidget;
-	topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-	QWidget *bottomFiller = new QWidget;
-	bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	//content stuff
+	QSplitter *splitter = new QSplitter(parent);
+	QTreeView *treeview = new QTreeView;
+    QWidget *content = new QWidget;
+	QStackedLayout *stacked = new QStackedLayout;
+	stacked->addWidget(new QTextEdit);
+	stacked->addWidget(new QLabel);
+	stacked->addWidget(new QOpenGLWidget);
+	content->setLayout(stacked);
+	//treeview
+	m_model = new QStandardItemModel;
+	treeview->setModel(m_model);
+	
+	splitter->addWidget(treeview);
+	splitter->addWidget(content);
 
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->setMargin(5);
-	layout->addWidget(topFiller);
-	layout->addWidget(bottomFiller);
+	layout->addWidget(splitter);
 	widget->setLayout(layout);
 
 	createActions();
@@ -39,6 +52,18 @@ Editor::~Editor()
 void Editor::Load(const std::string & archive)
 {
 
+}
+
+void Editor::PopulateTree()
+{
+	//get root of the tree
+	QStandardItem *item = m_model->invisibleRootItem();
+
+	for(const auto& entry : m_archive.ListEntries())
+	{
+		QString name(entry.c_str());
+		item->appendRow(new QStandardItem(name));
+	}
 }
 
 void Editor::createActions()
@@ -146,6 +171,12 @@ void Editor::open()
 {
 	auto fileName = QFileDialog::getOpenFileName(this,
     tr("Open Archive"), "", tr("Big Files (*.big)"));
+	
+	if(m_archive.Load(fileName.toStdString()))
+	{
+		m_path = fileName;
+		PopulateTree();
+	}
 }
 
 void Editor::save()
