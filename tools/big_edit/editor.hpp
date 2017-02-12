@@ -21,6 +21,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 #endif // QT_NO_CONTEXTMENU
 private slots:
+	void treeChanged(const QItemSelection &selected, const QItemSelection &deselected);
 	void newFile();
 	void open();
 	void save();
