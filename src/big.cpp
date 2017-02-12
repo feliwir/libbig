@@ -8,6 +8,9 @@ using namespace libbig;
 
 bool Big::Load(const std::string& name)
 {
+	if(m_stream.is_open())
+		m_stream.close();
+
 	m_stream.open(name,std::ios::in| std::ios::binary);
 	//check if archive exists
 	if (m_stream.fail())

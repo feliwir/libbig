@@ -3,7 +3,10 @@
 #include <QTreeView>
 #include <QAction>
 #include <QStandardItemModel>
+#include <QStackedLayout>
 #include <QLabel>
+#include <QTextEdit>
+#include <QOpenGLWidget>
 #include <libbig/big.hpp>
 using namespace libbig;
 
@@ -58,6 +61,10 @@ private:
 private:
 	void PopulateTree();
 private:
+	QTextEdit* m_texteditor;
+	QLabel* m_imageviewer;
+	QOpenGLWidget* m_modelviewer;
+	QStackedLayout* m_content;
 	QStandardItemModel* m_model;
 	QString m_path;
 	Big m_archive;

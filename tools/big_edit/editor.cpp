@@ -5,9 +5,7 @@
 #include <QFileDialog>
 #include <QContextMenuEvent>
 #include <QSplitter>
-#include <QTextEdit>
-#include <QStackedLayout>
-#include <QOpenGLWidget>
+#include <QPixmap>
 
 Editor::Editor(QWidget* parent)
 {
@@ -18,13 +16,17 @@ Editor::Editor(QWidget* parent)
 	QSplitter *splitter = new QSplitter(parent);
 	QTreeView *treeview = new QTreeView;
     QWidget *content = new QWidget;
-	QStackedLayout *stacked = new QStackedLayout;
-	stacked->addWidget(new QTextEdit);
-	stacked->addWidget(new QLabel);
-	stacked->addWidget(new QOpenGLWidget);
-	content->setLayout(stacked);
+	m_content = new QStackedLayout;
+	m_texteditor = new QTextEdit;
+	m_imageviewer = new QLabel;
+	m_modelviewer = new QOpenGLWidget;
+	m_content->addWidget(m_texteditor);
+	m_content->addWidget(m_imageviewer);
+	m_content->addWidget(m_modelviewer);
+	content->setLayout(m_content);
 	//treeview
 	m_model = new QStandardItemModel;
+	treeview->setSelectionMode(QAbstractItemView::SingleSelection);
 	treeview->setModel(m_model);
 	
 	splitter->addWidget(treeview);
@@ -50,7 +52,29 @@ Editor::Editor(QWidget* parent)
 
 void Editor::treeChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
-
+	QModelIndexList indices = selected.indexes();
+	if (indices.size() > 0)
+	{
+		QVariant data = indices.front().data();
+		QString entry = data.toString();
+		QString extension = entry.split('.').back();
+		if(extension=="ini"||extension=="inc")
+		{
+			m_content->setCurrentWidget(m_texteditor);
+			std::string content = m_archive.GetText(entry.toStdString());
+			m_texteditor->setText(QString(content.c_str()));
+		}
+		else if(extension=="jpg"||extension=="tga"||extension=="dds")
+		{
+			m_content->setCurrentWidget(m_imageviewer);
+			uint32_t size = 0;
+			uint8_t* content = m_archive.GetBinary(entry.toStdString(),size);
+			QPixmap pixmap;
+			pixmap.loadFromData(content,size);
+			m_imageviewer->setPixmap(pixmap);
+		}
+	}
+	
 }
 
 Editor::~Editor()
@@ -70,8 +94,8 @@ struct Directory
 void Editor::PopulateTree()
 {
 	//get root of the tree
+	m_model->clear();
 	QStandardItem *item = m_model->invisibleRootItem();
-
 	for(const auto& entry : m_archive.ListEntries())
 	{
 		QString name(entry.c_str());
