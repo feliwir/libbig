@@ -25,7 +25,7 @@ addons:
         - cmake-data
         - libpthread-stubs0-dev
         - qt5-default
-
+        - libqt5opengl5-dev
 # Install
 install:
   - if [ "$TRAVIS_OS_NAME" = "linux" -a "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
