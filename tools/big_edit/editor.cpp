@@ -37,11 +37,19 @@ Editor::Editor(QWidget* parent)
 
 	createActions();
 	createMenus();
-
+	connect(treeview->selectionModel(),
+	SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), 
+	this, SLOT(treeChanged(const QItemSelection&,const QItemSelection&)));
+	
 	QString message = tr("A context menu is available by right-clicking");
 	statusBar()->showMessage(message);
 
 	setMinimumSize(300, 200);
+
+}
+
+void Editor::treeChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
 
 }
 
@@ -54,6 +62,11 @@ void Editor::Load(const std::string & archive)
 
 }
 
+struct Directory
+{
+
+};
+
 void Editor::PopulateTree()
 {
 	//get root of the tree
@@ -62,7 +75,9 @@ void Editor::PopulateTree()
 	for(const auto& entry : m_archive.ListEntries())
 	{
 		QString name(entry.c_str());
-		item->appendRow(new QStandardItem(name));
+		QStandardItem* child = new QStandardItem(name);
+		child->setData(QVariant(name));
+		item->appendRow(child);
 	}
 }
 
