@@ -50,8 +50,7 @@ Editor::Editor(QWidget* parent)
 
 void Editor::treeChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
-	QVariant data = m_model->data(selected.begin());
-	QString entry = data.toString();
+
 }
 
 Editor::~Editor()
@@ -77,7 +76,7 @@ void Editor::PopulateTree()
 	{
 		QString name(entry.c_str());
 		QStandardItem* child = new QStandardItem(name);
-		child->setData(name);
+		child->setData(QVariant(name));
 		item->appendRow(child);
 	}
 }
