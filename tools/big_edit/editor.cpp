@@ -12,10 +12,10 @@ Editor::Editor(QWidget* parent)
 	QWidget *widget = new QWidget;
 	setCentralWidget(widget);
 
-	//content stuff
+	//CONTENT 
 	QSplitter *splitter = new QSplitter(parent);
 	QTreeView *treeview = new QTreeView;
-    QWidget *content = new QWidget;
+    QWidget* content = new QWidget;
 	m_content = new QStackedLayout;
 	m_texteditor = new QTextEdit;
 	m_imageviewer = new QLabel;
@@ -24,7 +24,8 @@ Editor::Editor(QWidget* parent)
 	m_content->addWidget(m_imageviewer);
 	m_content->addWidget(m_modelviewer);
 	content->setLayout(m_content);
-	//treeview
+
+	//TREEVIEW
 	m_model = new QStandardItemModel;
 	treeview->setSelectionMode(QAbstractItemView::SingleSelection);
 	treeview->setModel(m_model);
@@ -58,19 +59,19 @@ void Editor::treeChanged(const QItemSelection &selected, const QItemSelection &d
 		QVariant data = indices.front().data();
 		QString entry = data.toString();
 		QString extension = entry.split('.').back();
-		if(extension=="ini"||extension=="inc")
+		if(extension=="ini"||extension=="inc"||extension=="txt")
 		{
 			m_content->setCurrentWidget(m_texteditor);
 			std::string content = m_archive.GetText(entry.toStdString());
 			m_texteditor->setText(QString(content.c_str()));
 		}
-		else if(extension=="jpg"||extension=="tga"||extension=="dds")
+		else if(extension=="jpg"||extension=="tga"||extension=="dds"||extension=="png")
 		{
 			m_content->setCurrentWidget(m_imageviewer);
 			uint32_t size = 0;
 			uint8_t* content = m_archive.GetBinary(entry.toStdString(),size);
 			QPixmap pixmap;
-			pixmap.loadFromData(content,size);
+			bool result = pixmap.loadFromData(content,size);
 			m_imageviewer->setPixmap(pixmap);
 		}
 	}
@@ -108,60 +109,38 @@ void Editor::PopulateTree()
 void Editor::createActions()
 {
 	//FILE ACTIONS
-	newAct = new QAction(tr("&New"), this);
-	newAct->setShortcuts(QKeySequence::New);
-	newAct->setStatusTip(tr("Create a new file"));
-	connect(newAct, &QAction::triggered, this, &Editor::newFile);
-
-	openAct = new QAction(tr("&Open"), this);
-	openAct->setShortcuts(QKeySequence::Open);
-	openAct->setStatusTip(tr("Open a new archive"));
-	connect(openAct, &QAction::triggered, this, &Editor::open);
-
-	saveAct = new QAction(tr("&Save"), this);
-	saveAct->setShortcuts(QKeySequence::Save);
-	saveAct->setStatusTip(tr("Save opened archive"));
-	connect(saveAct, &QAction::triggered, this, &Editor::save);
-
-	saveAsAct = new QAction(tr("Save&As"), this);
-	saveAsAct->setShortcuts(QKeySequence::SaveAs);
-	saveAsAct->setStatusTip(tr("Save opened archive"));
-	connect(saveAsAct, &QAction::triggered, this, &Editor::saveAs);
-
-	exitAct = new QAction(tr("&Exit"), this);
-	exitAct->setShortcuts(QKeySequence::Quit);
-	exitAct->setStatusTip(tr("Exit program"));
-	connect(exitAct, &QAction::triggered, this, &Editor::exit);
-	//EDIT ACTIONS
-	undoAct = new QAction(tr("&Undo"), this);
-	undoAct->setShortcuts(QKeySequence::Undo);
-	undoAct->setStatusTip(tr("Undo last action"));
-	connect(undoAct, &QAction::triggered, this, &Editor::undo);
-
-	redoAct = new QAction(tr("&Redo"), this);
-	redoAct->setShortcuts(QKeySequence::Redo);
-	redoAct->setStatusTip(tr("Redo last action"));
-	connect(redoAct, &QAction::triggered, this, &Editor::redo);
-
-	cutAct = new QAction(tr("&Cut"), this);
-	cutAct->setShortcuts(QKeySequence::Cut);
-	cutAct->setStatusTip(tr("Cut selection"));
-	connect(cutAct, &QAction::triggered, this, &Editor::cut);
-
-	copyAct = new QAction(tr("&Copy"), this);
-	copyAct->setShortcuts(QKeySequence::Copy);
-	copyAct->setStatusTip(tr("Copy selection"));
-	connect(copyAct, &QAction::triggered, this, &Editor::copy);
-
-	pasteAct = new QAction(tr("&Paste"), this);
-	pasteAct->setShortcuts(QKeySequence::Paste);
-	pasteAct->setStatusTip(tr("Paste at cursor"));
-	connect(pasteAct, &QAction::triggered, this, &Editor::paste);
+	auto createAction = [this](QAction*& action, QKeySequence::StandardKey key, const char* name, const char* description, auto&& cb)
+	{
+		action = new QAction(tr(name), this);
+		action->setShortcuts(key);
+		action->setStatusTip(description);
+		connect(action, &QAction::triggered, this, cb);
+	};
+	//NEW
+	createAction(newAct, QKeySequence::New, "&New", "Create a new file", &Editor::newFile);
+	//OPEN
+	createAction(openAct, QKeySequence::Open, "&Open", "Open a new archive", &Editor::open);
+	//SAVE
+	createAction(saveAct, QKeySequence::Save, "&Save", "Save opened archive", &Editor::save);
+	//SAVE AS
+	createAction(saveAsAct, QKeySequence::SaveAs, "Save&As", "Save opened archive", &Editor::saveAs);
+	//QUIT
+	createAction(quitAct, QKeySequence::Quit, "&Quit", "Quit program", &Editor::quit);
+	//UNDO
+	createAction(undoAct, QKeySequence::Undo, "&Undo", "Undo last action", &Editor::undo);
+	//REDO
+	createAction(redoAct, QKeySequence::Redo, "&Redo", "Redo last action", &Editor::redo);
+	//CUT
+	createAction(cutAct, QKeySequence::Cut, "&Cut", "Cut selection", &Editor::cut);
+	//COPY
+	createAction(copyAct, QKeySequence::Copy, "&Copy", "Copy selection", &Editor::copy);
+	//PASTE
+	createAction(pasteAct, QKeySequence::Paste, "&Paste", "Paste clipboard", &Editor::paste);
 	//ABOUT
 	aboutAct = new QAction(tr("&About"), this);
 	aboutAct->setStatusTip(tr("Info about this program"));
 	connect(aboutAct, &QAction::triggered, this, &Editor::about);
-
+	//ABOUT QT
 	aboutQtAct = new QAction(tr("About &Qt"), this);
 	aboutQtAct->setStatusTip(tr("Info about Qt"));
 	connect(aboutQtAct, &QAction::triggered, this, &Editor::aboutQt);
@@ -175,7 +154,7 @@ void Editor::createMenus()
 	fileMenu->addAction(saveAct);
 	fileMenu->addAction(saveAsAct);
 	fileMenu->addSeparator();
-	fileMenu->addAction(exitAct);
+	fileMenu->addAction(quitAct);
 
 	editMenu = menuBar()->addMenu(tr("&Edit"));
 	editMenu->addAction(undoAct);
@@ -256,6 +235,6 @@ void Editor::aboutQt()
 {
 }
 
-void Editor::exit()
+void Editor::quit()
 {
 }

@@ -5,7 +5,7 @@
 int main(int argc,char** argv)
 {
 	QApplication app(argc, argv);
-	QCoreApplication::setOrganizationName("Feliwir");
+	QCoreApplication::setOrganizationName("Stephan Vedder");
 	QCoreApplication::setApplicationName("Big Editor");
 	QCoreApplication::setApplicationVersion(QT_VERSION_STR);
 	QCommandLineParser parser;

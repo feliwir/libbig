@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QOpenGLWidget>
+#include <QMediaPlayer>
 #include <libbig/big.hpp>
 using namespace libbig;
 
@@ -36,7 +37,7 @@ private slots:
 	void paste();
 	void about();
 	void aboutQt();
-	void exit();
+	void quit();
 private:
 	void createActions();
 	void createMenus();
@@ -50,7 +51,7 @@ private:
 	QAction *openAct;
 	QAction *saveAct;
 	QAction *saveAsAct;
-	QAction *exitAct;
+	QAction *quitAct;
 	QAction *undoAct;
 	QAction *redoAct;
 	QAction *cutAct;
@@ -61,6 +62,8 @@ private:
 private:
 	void PopulateTree();
 private:
+	QMediaPlayer* m_mediaplayer;
+	QVideoWidget* m_videowidget;
 	QTextEdit* m_texteditor;
 	QLabel* m_imageviewer;
 	QOpenGLWidget* m_modelviewer;
